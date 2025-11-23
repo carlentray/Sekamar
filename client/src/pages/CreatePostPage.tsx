@@ -39,7 +39,6 @@ export default function CreatePostPage() {
     formData.append('budget', budget);
     formData.append('location', location);
     
-    // LOGIKA NOMOR WA
     let formattedNumber = phoneNumber.replace(/\D/g, ''); 
     if (formattedNumber.startsWith('0')) {
       formattedNumber = formattedNumber.slice(1); 
