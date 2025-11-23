@@ -117,6 +117,50 @@ export default function EditPostPage() {
           <textarea className="w-full border rounded-lg px-3 py-2 mt-1 h-24" value={description} onChange={e => setDescription(e.target.value)} required></textarea>
         </div>
 
+        <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+          <h3 className="font-semibold text-gray-700 mb-3">Edit Preferensi Teman</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <label className="flex flex-col text-sm text-gray-600">
+              Status Merokok
+              <select 
+                className="mt-1 border rounded p-1 bg-white"
+                value={habits.smoking ? 'yes' : 'no'}
+                onChange={(e) => setHabits({...habits, smoking: e.target.value === 'yes'})}
+              >
+                <option value="no">🚭 Tidak Merokok</option>
+                <option value="yes">🚬 Perokok</option>
+              </select>
+            </label>
+
+            <label className="flex flex-col text-sm text-gray-600">
+              Jam Tidur
+              <select 
+                className="mt-1 border rounded p-1 bg-white"
+                value={habits.sleepSchedule}
+                onChange={(e) => setHabits({...habits, sleepSchedule: e.target.value})}
+              >
+                <option value="Normal">⏰ Normal</option>
+                <option value="EarlyBird">🌅 Bangun Pagi</option>
+                <option value="NightOwl">🦉 Begadang</option>
+              </select>
+            </label>
+
+             <label className="flex flex-col text-sm text-gray-600">
+              Kebersihan
+              <select 
+                className="mt-1 border rounded p-1 bg-white"
+                value={habits.cleanliness}
+                onChange={(e) => setHabits({...habits, cleanliness: e.target.value})}
+              >
+                <option value="Standard">🧹 Standar</option>
+                <option value="Messy">🗑️ Agak Berantakan</option>
+                <option value="CleanFreak">✨ Sangat Resik</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
         <div>
           <label className="font-medium text-gray-700">Nomor WhatsApp</label>
           <div className="flex items-center border rounded-lg px-3 py-2 mt-1 focus-within:ring-2 ring-orange-400">
