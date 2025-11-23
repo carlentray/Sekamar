@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Upload, MapPin, DollarSign, MessageCircle, Type } from 'lucide-react';
+import { Upload, MapPin, DollarSign, Type } from 'lucide-react';
 
 export default function CreatePostPage() {
   const navigate = useNavigate();
@@ -10,8 +10,8 @@ export default function CreatePostPage() {
   const [description, setDescription] = useState('');
   const [budget, setBudget] = useState('');
   const [location, setLocation] = useState('');
-  const [contactLink, setContactLink] = useState('');
   const [image, setImage] = useState<File | null>(null);
+  const [phoneNumber, setPhoneNumber] = useState('');
   
   const [habits, setHabits] = useState({
     smoking: false,
@@ -38,9 +38,16 @@ export default function CreatePostPage() {
     formData.append('description', description);
     formData.append('budget', budget);
     formData.append('location', location);
-    formData.append('contactLink', contactLink);
-    formData.append('image', image);
     
+    // LOGIKA NOMOR WA
+    let formattedNumber = phoneNumber.replace(/\D/g, ''); 
+    if (formattedNumber.startsWith('0')) {
+      formattedNumber = formattedNumber.slice(1); 
+    }
+    const finalLink = `https://wa.me/62${formattedNumber}`;
+    formData.append('contactLink', finalLink);
+
+    formData.append('image', image);
     formData.append('habits', JSON.stringify(habits));
 
     try {
@@ -85,7 +92,7 @@ export default function CreatePostPage() {
           <div>
             <label className="font-medium text-gray-700">Budget (Rp)</label>
             <div className="flex items-center border rounded-lg px-3 py-2 mt-1 focus-within:ring-2 ring-primary">
-              <DollarSign size={18} className="text-gray-400 mr-2" />
+              <span className="text-gray-500 font-bold mr-2 text-sm">Rp</span>
               <input type="number" className="w-full outline-none" placeholder="500000" value={budget} onChange={e => setBudget(e.target.value)} required />
             </div>
           </div>
@@ -149,12 +156,21 @@ export default function CreatePostPage() {
         </div>
 
         <div>
-          <label className="font-medium text-gray-700">Link WhatsApp</label>
+          <label className="font-medium text-gray-700">Nomor WhatsApp</label>
           <div className="flex items-center border rounded-lg px-3 py-2 mt-1 focus-within:ring-2 ring-primary">
-            <MessageCircle size={18} className="text-green-500 mr-2" />
-            <input type="text" className="w-full outline-none" placeholder="https://wa.me/628123..." value={contactLink} onChange={e => setContactLink(e.target.value)} required />
+            <div className="bg-green-100 text-green-700 p-1 rounded mr-2 text-xs font-bold">
+                +62
+            </div>
+            <input 
+                type="number" 
+                className="w-full outline-none" 
+                placeholder="81234567890" 
+                value={phoneNumber} 
+                onChange={e => setPhoneNumber(e.target.value)} 
+                required 
+            />
           </div>
-          <p className="text-xs text-gray-400 mt-1">Gunakan format: https://wa.me/628xxxxx</p>
+          <p className="text-xs text-gray-400 mt-1">Masukkan nomor saja (Contoh: 8123...)</p>
         </div>
 
         <button type="submit" className="w-full bg-primary text-white py-3 rounded-lg hover:bg-indigo-700 transition font-bold shadow-lg">

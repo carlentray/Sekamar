@@ -5,7 +5,7 @@ import path from 'path';
 import { upload } from './middleware/upload';
 import { login, register } from './controllers/authController';
 import { verifyToken } from './middleware/auth';
-import {createPost, getPosts, getPostById } from './controllers/postController';
+import {createPost, getPosts, getPostById, updatePost, deletePost} from './controllers/postController';
 
 const app = express();
 
@@ -24,6 +24,8 @@ app.post('/api/auth/login', login);
 app.get('/api/posts', getPosts);
 app.get('/api/posts/:id', getPostById);
 app.post('/api/posts', verifyToken, upload.single('image'), createPost);
+app.put('/api/posts/:id', verifyToken, upload.single('image'), updatePost);
+app.delete('/api/posts/:id', verifyToken, deletePost);
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

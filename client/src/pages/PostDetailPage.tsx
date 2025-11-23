@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { MapPin, DollarSign, MessageCircle, ArrowLeft, User, Calendar } from 'lucide-react';
+import { MapPin, DollarSign, MessageCircle, ArrowLeft, User, Calendar, Edit, Trash } from 'lucide-react';
 
 export default function PostDetailPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [post, setPost] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+
+  const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
 
   useEffect(() => {
     axios.get(`http://localhost:5000/api/posts/${id}`)
@@ -20,6 +23,22 @@ export default function PostDetailPage() {
       });
   }, [id]);
 
+  const handleDelete = async () => {
+    if (!window.confirm('Yakin mau menghapus iklan ini? Tindakan ini tidak bisa dibatalkan.')) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`http://localhost:5000/api/posts/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      alert('Iklan berhasil dihapus!');
+      navigate('/');
+    } catch (err) {
+      console.error(err);
+      alert('Gagal menghapus iklan. Pastikan Anda login.');
+    }
+  };
+
   if (loading) return <div className="text-center mt-20">Memuat detail...</div>;
   if (!post) return <div className="text-center mt-20">Iklan tidak ditemukan :(</div>;
 
@@ -28,7 +47,7 @@ export default function PostDetailPage() {
       
       <div className="p-4 border-b">
         <Link to="/" className="flex items-center text-gray-500 hover:text-primary w-fit">
-          <ArrowLeft size={18} className="mr-2" /> Back to Home
+          <ArrowLeft size={18} className="mr-2" /> Kembali ke Beranda
         </Link>
       </div>
 
@@ -42,6 +61,7 @@ export default function PostDetailPage() {
         </div>
 
         <div className="md:w-1/2 p-8 flex flex-col">
+          
           <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
             <span className="bg-blue-50 text-blue-600 px-2 py-1 rounded-md text-xs font-bold">
               {post.genderTarget === 'Male' ? 'Khusus Putra' : (post.genderTarget === 'Female' ? 'Khusus Putri' : 'Campur/Bebas')}
@@ -51,10 +71,34 @@ export default function PostDetailPage() {
             </span>
           </div>
 
-          <h1 className="text-3xl font-bold text-gray-800 mb-4">{post.title}</h1>
+          <div className="flex justify-between items-start mb-4 gap-2">
+            <h1 className="text-3xl font-bold text-gray-800 leading-tight">{post.title}</h1>
+            
+            {currentUser.id === post.user?._id && (
+              <div className="flex gap-2 shrink-0">
+                <button 
+                  onClick={() => navigate(`/edit/${post._id}`)}
+                  className="flex items-center gap-1 bg-orange-100 text-orange-600 px-3 py-1.5 rounded-lg hover:bg-orange-200 transition text-sm font-bold"
+                  title="Edit Iklan"
+                >
+                  <Edit size={16} /> Edit
+                </button>
+
+                <button 
+                  onClick={handleDelete}
+                  className="flex items-center gap-1 bg-red-100 text-red-600 px-3 py-1.5 rounded-lg hover:bg-red-200 transition text-sm font-bold"
+                  title="Hapus Iklan"
+                >
+                  <Trash size={16} /> Hapus
+                </button>
+              </div>
+            )}
+          </div>
           
           <div className="text-2xl font-bold text-primary mb-6 flex items-center">
-            <DollarSign size={24} /> {post.budget.toLocaleString('id-ID')} <span className="text-sm text-gray-400 font-normal ml-1">/bulan</span>
+            <span className="mr-1">Rp</span> 
+            {post.budget.toLocaleString('id-ID')} 
+            <span className="text-sm text-gray-400 font-normal ml-1">/bulan</span>
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-6">
@@ -74,7 +118,7 @@ export default function PostDetailPage() {
 
           <div className="mb-8">
              <h3 className="font-bold text-gray-700 mb-2">Deskripsi & Kriteria:</h3>
-             <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+             <p className="text-gray-600 leading-relaxed whitespace-pre-line text-sm">
                {post.description}
              </p>
           </div>

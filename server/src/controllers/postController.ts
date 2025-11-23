@@ -64,3 +64,54 @@ export const getPostById = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Server Error' });
   }
 };
+
+export const updatePost = async (req: AuthRequest, res: Response) => {
+  try {
+    const { title, description, budget, location, genderTarget, habits, contactLink } = req.body;
+    
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ message: 'Iklan tidak ditemukan' });
+
+    if (post.user.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'Anda tidak berhak mengedit postingan ini!' });
+    }
+
+    post.title = title || post.title;
+    post.description = description || post.description;
+    post.budget = budget || post.budget;
+    post.location = location || post.location;
+    post.genderTarget = genderTarget || post.genderTarget;
+    post.contactLink = contactLink || post.contactLink;
+
+    if (habits) {
+      post.habits = JSON.parse(habits);
+    }
+
+    if (req.file) {
+      post.image = `/uploads/${req.file.filename}`;
+    }
+
+    await post.save();
+    res.json(post);
+
+  } catch (error) {
+    res.status(500).json({ message: 'Gagal mengupdate postingan' });
+  }
+};
+
+export const deletePost = async (req: AuthRequest, res: Response) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ message: 'Iklan tidak ditemukan' });
+
+    if (post.user.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'Bukan pemilik postingan!' });
+    }
+
+    await post.deleteOne(); 
+    res.json({ message: 'Iklan berhasil dihapus' });
+
+  } catch (error) {
+    res.status(500).json({ message: 'Gagal menghapus' });
+  }
+};
