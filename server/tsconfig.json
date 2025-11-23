@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es2016",                       /* Versi JS hasil compile */
+    "module": "commonjs",                     /* Wajib commonjs buat Node.js */
+    "moduleResolution": "node",               /* Cara cari folder node_modules */
+    "outDir": "./dist",                       /* Hasil compile masuk folder dist */
+    "rootDir": "./src",                       /* Sumber kodingan ada di folder src */
+    
+    /* Strictness & Interop (Penting!) */
+    "esModuleInterop": true,                  /* Biar bisa 'import express from express' */
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,                     /* Abaikan error di library orang lain */
+    
+    /* INI YANG BIKIN ERROR TADI (Kita matikan atau hapus) */
+    "verbatimModuleSyntax": false
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
