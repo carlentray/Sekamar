@@ -23,11 +23,6 @@ export default function Navbar() {
 
         <div className="flex items-center gap-4">
           
-          <Link to="/" className="text-gray-600 hover:text-primary flex flex-col items-center text-xs gap-1 hidden md:flex">
-            <Home size={20} />
-            <span className="hidden md:inline">Beranda</span>
-          </Link>
-
           {token ? (
             <>
               <div className="flex items-center gap-2 bg-indigo-50 text-primary px-3 py-1.5 rounded-full border border-indigo-100 mr-2">
@@ -39,6 +34,10 @@ export default function Navbar() {
                 </span>
               </div>
 
+          <Link to="/" className="text-gray-600 hover:text-primary flex flex-col items-center text-xs gap-1 hidden md:flex">
+            <Home size={20} />
+            <span className="hidden md:inline">Beranda</span>
+          </Link>
               <Link to="/create" className="text-gray-600 hover:text-primary flex flex-col items-center text-xs gap-1">
                 <PlusSquare size={20} />
                 <span className="hidden md:inline">Pasang Iklan</span>
